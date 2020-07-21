@@ -7,10 +7,10 @@ using Application.Interfaces.BLLs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DivisoresApplication.Controllers
+namespace DivisoresApplication.Controllers.V1
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("v1/[controller]")]
     public class DivisoresController : ControllerBase
     {
         
