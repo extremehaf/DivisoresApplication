@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -11,16 +12,32 @@ namespace DivisoresApplication
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+            var hostBuilder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+            await ConfigureHostBuilder(hostBuilder)
+                .Build()
+                .RunAsync()
+                .ConfigureAwait(false);
+        }
+
+        public static IHostBuilder ConfigureHostBuilder(IHostBuilder hostBuilder) =>
+            hostBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json");
+            })
+            .ConfigureLogging((hostingContext, logging) =>
+            {
+#if DEBUG
+                logging.AddConsole();
+#endif
+
+            }).UseContentRoot(Directory.GetCurrentDirectory());
     }
 }
